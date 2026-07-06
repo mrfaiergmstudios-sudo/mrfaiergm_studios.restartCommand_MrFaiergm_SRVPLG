@@ -27,16 +27,20 @@ public final class RestartCommand_MrFaiergm_SRVPLG extends JavaPlugin implements
         getCommand("prestart").setExecutor(this);
         getCommand("pstop").setExecutor(this);
         getServer().getPluginManager().registerEvents(this, this);
-        Bukkit.broadcastMessage("================================================");
-        Bukkit.broadcastMessage("Хорошего дня! Спасибо за установку плагина! - MrFaiergm");
-        Bukkit.broadcastMessage("Вас приветствует плагин - §f[§cMrFaiergmPLG]§f");
-        Bukkit.broadcastMessage("================================================");
+        Bukkit.getConsoleSender().sendMessage("=======================================================");
+        Bukkit.getConsoleSender().sendMessage("Хорошего дня! Спасибо за установку плагина! - MrFaiergm");
+        Bukkit.getConsoleSender().sendMessage("Вас приветствует плагин - §f[§cMrFaiergmPLG]§f");
+        Bukkit.getConsoleSender().sendMessage("=======================================================");
 
     }
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        Bukkit.getConsoleSender().sendMessage("=======================================================");
+        Bukkit.getConsoleSender().sendMessage("Хорошего дня! Спасибо за установку плагина! - MrFaiergm");
+        Bukkit.getConsoleSender().sendMessage("§f[§cMrFaiergmPLG]§f - Удачи!");
+        Bukkit.getConsoleSender().sendMessage("=======================================================");
+
     }
 
     @EventHandler
@@ -51,9 +55,6 @@ public final class RestartCommand_MrFaiergm_SRVPLG extends JavaPlugin implements
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
         if (command.getName().equalsIgnoreCase("prestart")){
-            if (sender instanceof Player){
-                Player player = (Player) sender;
-            }
             String playername = sender.getName();
             if (sender.isOp()){
                 for (Player p : getServer().getOnlinePlayers()){
@@ -95,15 +96,13 @@ public final class RestartCommand_MrFaiergm_SRVPLG extends JavaPlugin implements
             }
         }
         if (command.getName().equalsIgnoreCase("pstop")){
-            if (sender instanceof Player){
-                Player player = (Player) sender;
-            }
             String playername = sender.getName();
             if(bukkittimer == null){
                 sender.sendMessage("§f[§cMrFaiergmPLG]§f " + "Перезапуск ещё не запущен!");
             }
             if(bukkittimer != null && sender.isOp()){
                 bukkittimer.cancel();
+                bukkittimer = null;
                 Bukkit.broadcastMessage("§f[§cMrFaiergmPLG]§f " + text_restart_canel);
                 new BukkitRunnable(){
                     public void run(){
@@ -119,4 +118,6 @@ public final class RestartCommand_MrFaiergm_SRVPLG extends JavaPlugin implements
         } return true;
     }
 
+
+//    посхалка
 }
