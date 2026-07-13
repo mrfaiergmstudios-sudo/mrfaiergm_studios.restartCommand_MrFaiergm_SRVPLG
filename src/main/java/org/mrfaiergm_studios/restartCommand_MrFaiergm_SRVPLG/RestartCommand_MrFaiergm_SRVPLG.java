@@ -29,7 +29,7 @@ public final class RestartCommand_MrFaiergm_SRVPLG extends JavaPlugin implements
         getServer().getPluginManager().registerEvents(this, this);
         Bukkit.getConsoleSender().sendMessage("=======================================================");
         Bukkit.getConsoleSender().sendMessage("Хорошего дня! Спасибо за установку плагина! - MrFaiergm");
-        Bukkit.getConsoleSender().sendMessage("Вас приветствует плагин - §f[§cMrFaiergmPLG]§f");
+        Bukkit.getConsoleSender().sendMessage("Вас приветствует плагин - §f[§cPrestart]§f");
         Bukkit.getConsoleSender().sendMessage("=======================================================");
 
     }
@@ -38,7 +38,7 @@ public final class RestartCommand_MrFaiergm_SRVPLG extends JavaPlugin implements
     public void onDisable() {
         Bukkit.getConsoleSender().sendMessage("=======================================================");
         Bukkit.getConsoleSender().sendMessage("Хорошего дня! Спасибо за установку плагина! - MrFaiergm");
-        Bukkit.getConsoleSender().sendMessage("§f[§cMrFaiergmPLG]§f - Удачи!");
+        Bukkit.getConsoleSender().sendMessage("§f[§cPrestart]§f - Удачи!");
         Bukkit.getConsoleSender().sendMessage("=======================================================");
 
     }
@@ -48,7 +48,7 @@ public final class RestartCommand_MrFaiergm_SRVPLG extends JavaPlugin implements
         Player player = event.getPlayer();
         String playername = event.getPlayer().getName();
         if (player.isOp()){
-            player.sendMessage("§f[§cMrFaiergmPLG]§f " + "§l§fПриветствую вас " + playername + "§l§f!");
+            player.sendMessage("§f[§cPrestartPLG]§f " + "§l§fПриветствую вас " + playername + "§l§f!");
         }
     }
 
@@ -56,66 +56,91 @@ public final class RestartCommand_MrFaiergm_SRVPLG extends JavaPlugin implements
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
         if (command.getName().equalsIgnoreCase("prestart")){
             String playername = sender.getName();
-            if (sender.isOp()){
-                for (Player p : getServer().getOnlinePlayers()){
-                    if (p.isOp()){
-                        p.sendMessage("[§cMrFaiergmPLG] " + "§l§fКтото Запустил перезапуск сервера! Если это были не вы пропишите команду" +  "§c§l/pstop");
+            if(args.length == 0){
+                if (sender.isOp()){
+                    for (Player p : getServer().getOnlinePlayers()){
+                        if (p.isOp()){
+                            p.sendMessage("[§cPrestartPLG] " + "§l§fКтото Запустил перезапуск сервера! Если это были не вы пропишите команду" +  "§c§l/pstop");
+                        }
                     }
-                }
-                new BukkitRunnable(){
-                    @Override
-                    public void run(){
-                        for (Player p : getServer().getOnlinePlayers()){
-                            if(p.isOp()){
-                                p.sendMessage("§f[§cMrFaiergmPLG]§f " + "§lМы узнали кто инициировал перезапуск, его ник - " + playername );
+                    new BukkitRunnable(){
+                        @Override
+                        public void run(){
+                            for (Player p : getServer().getOnlinePlayers()){
+                                if(p.isOp()){
+                                    p.sendMessage("§f[§cPrestartPLG]§f " + "§lМы узнали кто инициировал перезапуск, его ник - " + playername );
+                                }
                             }
                         }
-                    }
-                }.runTaskLater(this, 60L);
-                bukkittimer = new BukkitRunnable(){
-                    @Override
-                    public void run(){
-                        if (timer > 0) {
-                            Bukkit.broadcastMessage("§f[§cMrFaiergmPLG§c]§f " + text + timer);
-                            timer--;
-                        }
-                        if(timer <= 0){
-                            this.cancel();
-                            Bukkit.broadcastMessage("§f[§cMrFaiergmPLG]§f " + text_end);
-                            new BukkitRunnable(){
-                                @Override
-                                public void run(){
-                                    timer = getConfig().getInt("restart-timer");
-                                    Bukkit.spigot().restart();
-                                }
-                            }.runTaskLater(RestartCommand_MrFaiergm_SRVPLG.this, 100L );
+                    }.runTaskLater(this, 60L);
+                    bukkittimer = new BukkitRunnable(){
+                        @Override
+                        public void run(){
+                            if (timer > 0) {
+                                Bukkit.broadcastMessage("§f[§cPrestartPLG§c]§f " + text + timer);
+                                timer--;
+                            }
+                            if(timer <= 0){
+                                this.cancel();
+                                Bukkit.broadcastMessage("§f[§cPrestartPLG]§f " + text_end);
+                                new BukkitRunnable(){
+                                    @Override
+                                    public void run(){
+                                        timer = getConfig().getInt("restart-timer");
+                                        Bukkit.spigot().restart();
+                                    }
+                                }.runTaskLater(RestartCommand_MrFaiergm_SRVPLG.this, 100L );
 
+                            }
                         }
-                    }
-                }.runTaskTimer(RestartCommand_MrFaiergm_SRVPLG.this, 0l, 20l);
+                    }.runTaskTimer(RestartCommand_MrFaiergm_SRVPLG.this, 0l, 20l);
+                }
+                return true;
             }
+            if(args[0].equalsIgnoreCase("reload")){
+                saveConfig();
+                reloadConfig();
+                timer = getConfig().getInt("restart-timer");
+                text = getConfig().getString("restart-text");
+                text_end = getConfig().getString("restart-end");
+                text_restart_canel = getConfig().getString("restart-canel");
+
+            }
+
         }
         if (command.getName().equalsIgnoreCase("pstop")){
             String playername = sender.getName();
             if(bukkittimer == null){
-                sender.sendMessage("§f[§cMrFaiergmPLG]§f " + "Перезапуск ещё не запущен!");
+                sender.sendMessage("§f[§cPrestartPLG]§f " + "Перезапуск ещё не запущен!");
             }
             if(bukkittimer != null && sender.isOp()){
                 bukkittimer.cancel();
                 bukkittimer = null;
-                Bukkit.broadcastMessage("§f[§cMrFaiergmPLG]§f " + text_restart_canel);
+                Bukkit.broadcastMessage("§f[§cPrestartPLG]§f " + text_restart_canel);
                 new BukkitRunnable(){
                     public void run(){
                         for (Player p : getServer().getOnlinePlayers()){
                             if(p.isOp()){
                                 timer = getConfig().getInt("restart-timer");
-                                p.sendMessage("§f[§cMrFaiergmPLG]§f " + "§c§lПерезапуск сервера отменен Администратором - " + playername);
+                                p.sendMessage("§f[§cPrestartPLG]§f " + "§c§lПерезапуск сервера отменен Администратором - " + playername);
                             }
                         }
                     }
                 }.runTaskLater(this, 100L);
             }
-        } return true;
+        }
+        if (getConfig().getName().equalsIgnoreCase("PHelp")){
+            Player player = (Player) sender;
+            if(!player.isOp()){
+                return true;
+            }
+            player.sendMessage("§f[§cPrestartPLG]§f " + "Привет! Это помощник плагина  Prestart, вот подробные инструкции по командам :");
+            player.sendMessage("§f[§cPrestartPLG]§f " + "Команда : /prestart инициирует перезапуск сервера (Настроить секунды до перезапуска можно настроить в конфиге) и оповещает администрацию об этом! ");
+            player.sendMessage("§f[§cPrestartPLG]§f " + "Команда : /pstop  Останавливает перезпуск если он запущен");
+            player.sendMessage("§f[§cPrestartPLG]§f " + "Плагином занимается один человек - MrFaiergm поэтому возможны баги");
+            player.sendMessage("§f[§cPrestartPLG]§f " + "ЧТобы Обновить конфиг во время игры и не рестартить сервер нужно прописать команду /prestart reload !");
+        }
+        return true;
     }
 
 

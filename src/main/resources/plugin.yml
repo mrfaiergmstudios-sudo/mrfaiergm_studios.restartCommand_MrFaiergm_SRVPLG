@@ -1,5 +1,5 @@
-name: RestartCommand_MrFaiergm_SRVPLG
-version: '1.0-SNAPSHOT'
+name: PrestartCommandMrPLG
+version: '1.3-RELEASE'
 main: org.mrfaiergm_studios.restartCommand_MrFaiergm_SRVPLG.RestartCommand_MrFaiergm_SRVPLG
 api-version: '26.2'
 authors: [ MrFaiergm ]
